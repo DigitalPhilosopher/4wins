@@ -50,14 +50,17 @@ class Field:
     def boardIsFull(self):
         for col in range(len(self.field[0])):
             if self.field[0][col] == self.NO_PLAYER:
-                return True
-        return False
+                return False
+        return True
     
     def makeMove(self, move, player):
         for row in reversed(range(len(self.field))):
             if self.field[row][move] == self.NO_PLAYER:
                 self.field[row][move] = player
                 return self
+    
+    def isTerminal(self):
+        return self.boardIsFull() or self.winningPlayer()
     
     def copy(self):
         return Field(self.field.copy())

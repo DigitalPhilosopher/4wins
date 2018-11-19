@@ -55,7 +55,7 @@ class MiniMaxPlayer(c4p.Connect4Player):
                 if not opponent in count:
                     value += count[player] ** 2
             elif opponent in count:
-                value -= count[opponent] ** 2
+                value -= count[opponent] ** 3
         return value
 
     def won(self):

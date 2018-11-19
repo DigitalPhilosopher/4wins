@@ -1,4 +1,5 @@
 import Field as fd
+from collections import Counter
 
 class Connect4:
     def __init__(self, playerRedFunction, playerYellowFunction):
@@ -12,8 +13,7 @@ class Connect4:
         self.playerFunction = self.playerRedFunction
     
     def play(self):
-        while not self.field.winningPlayer() and self.field.boardIsFull():
-            print(self.field.getField())
+        while not self.field.winningPlayer() and not self.field.boardIsFull():
             move = self.playerFunction.makeMove(self.field.copy())
             while not self.field.moveIsValid(move):
                 move = self.playerFunction.makeMove(self.field.copy())
