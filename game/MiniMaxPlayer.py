@@ -58,11 +58,11 @@ class MiniMaxPlayer(c4p.Connect4Player):
                 value -= count[opponent] ** 3
         return value
 
-    def won(self):
+    def won(self, field):
         pass
 
-    def lost(self):
+    def lost(self, field):
         pass
     
-    def draw(self):
+    def draw(self, field):
         pass

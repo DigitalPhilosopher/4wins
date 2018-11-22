@@ -11,13 +11,13 @@ class Connect4Player(ABC):
         pass
     
     @abstractmethod
-    def won(self):
+    def won(self, field):
         pass
     
     @abstractmethod
-    def lost(self):
+    def lost(self, field):
         pass
     
     @abstractmethod
-    def draw(self):
+    def draw(self, field):
         pass

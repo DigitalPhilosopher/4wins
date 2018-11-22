@@ -4,8 +4,7 @@ from collections import Counter
 class Connect4:
     def __init__(self, playerRedFunction, playerYellowFunction):
         self.field = fd.Field()
-        
-        # TODO: Check if it is the right class
+
         self.playerRedFunction = playerRedFunction(fd.Field.RED_PLAYER)
         self.playerYellowFunction = playerYellowFunction(fd.Field.YELLOW_PLAYER)
         
@@ -27,12 +26,12 @@ class Connect4:
                 self.playerFunction = self.playerRedFunction
         
         if self.field.winningPlayer() == fd.Field.NO_PLAYER:
-            print("Game over! No winning player.")
+            self.playerRedFunction.draw(self.field.copy())
+            self.playerYellowFunction.draw(self.field.copy())
         else:
-            print("Game over! Winner is player " + ("red" if self.field.winningPlayer() == fd.Field.RED_PLAYER else "yellow") + ".")
             if self.field.winningPlayer() == fd.Field.RED_PLAYER:
-                self.playerRedFunction.won()
-                self.playerYellowFunction.lost()
+                self.playerRedFunction.won(self.field.copy())
+                self.playerYellowFunction.lost(self.field.copy())
             else:
-                self.playerRedFunction.lost()
-                self.playerYellowFunction.won()
+                self.playerRedFunction.lost(self.field.copy())
+                self.playerYellowFunction.won(self.field.copy())

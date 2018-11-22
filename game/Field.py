@@ -59,6 +59,12 @@ class Field:
                 self.field[row][move] = player
                 return self
     
+    def getHeightForMove(self, move):
+        for row in reversed(range(len(self.field))):
+            if self.field[row][move] == self.NO_PLAYER:
+                return row
+        return -1
+    
     def isTerminal(self):
         return self.boardIsFull() or self.winningPlayer()
     
