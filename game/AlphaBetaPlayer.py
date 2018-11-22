@@ -11,10 +11,13 @@ class AlphaBetaPlayer(c4p.Connect4Player):
     def alphabeta(self, node, depth, alpha, beta, maximizingPlayer):
         if depth == 0 or node.isTerminal():
             return -1, self.heuristic(node, self.color)
+        
+        availableMoves = node.availableMoves()
+        bestMove = availableMoves[0]
 
         if maximizingPlayer:
             value = -math.inf
-            for move in node.availableMoves():
+            for move in availableMoves:
                 _m, heuristic = self.alphabeta(node.copy().makeMove(move, self.color), depth - 1, alpha, beta, False)
                 if value < heuristic:
                     value = heuristic
@@ -26,7 +29,7 @@ class AlphaBetaPlayer(c4p.Connect4Player):
         
         else:
             value = math.inf
-            for move in node.availableMoves():
+            for move in availableMoves:
                 _m, heuristic = self.alphabeta(node.copy().makeMove(move, self.opponentColor), depth - 1, alpha, beta, True)
                 if value > heuristic:
                     value = heuristic
@@ -55,7 +58,11 @@ class AlphaBetaPlayer(c4p.Connect4Player):
             if player in count:
                 if not opponent in count:
                     value += count[player] ** 2
+                    if count[player] == 4:
+                        return math.inf
             elif opponent in count:
+                if count[opponent] == 4:
+                    return -math.inf
                 value -= count[opponent] ** 3
         return value
 

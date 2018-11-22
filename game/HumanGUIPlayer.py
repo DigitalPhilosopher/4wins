@@ -18,14 +18,8 @@ class HumanGUIPlayer(c4p.Connect4Player):
         )
 
         self.window.bind("<Button-1>", self.choosePosition)
-        self.window.bind("<Motion>", self.movePossiblePiece)
 
         self.window.pack()
-
-    def movePossiblePiece(self, event):
-        length = int(event.x / self.FIELD_WINDOW_LENGTH)
-        height = self.field.getHeightForMove(length)
-        self.possibleMove = (length, height)
         
     def choosePosition(self, event):
         move = int(event.x / self.FIELD_WINDOW_LENGTH)
@@ -64,14 +58,6 @@ class HumanGUIPlayer(c4p.Connect4Player):
                         self.FIELD_WINDOW_LENGTH+length*self.FIELD_WINDOW_LENGTH,
                         self.FIELD_WINDOW_HEIGHT+height*self.FIELD_WINDOW_HEIGHT,
                         fill="yellow"
-                    )
-                elif self.possibleMove == (length, height):
-                    self.window.create_oval(
-                        length * self.FIELD_WINDOW_LENGTH,
-                        height * self.FIELD_WINDOW_HEIGHT,
-                        self.FIELD_WINDOW_LENGTH + length * self.FIELD_WINDOW_LENGTH,
-                        self.FIELD_WINDOW_HEIGHT + height * self.FIELD_WINDOW_HEIGHT,
-                        fill = "yellow" if self.color == fd.Field.YELLOW_PLAYER else "red"
                     )
 
     def makeMove(self, field):
