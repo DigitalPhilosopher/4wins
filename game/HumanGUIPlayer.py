@@ -10,6 +10,7 @@ class HumanGUIPlayer(c4p.Connect4Player):
         super(HumanGUIPlayer, self).__init__(color)
 
         self.master = tk.Tk()
+        self.master.title("Connect Four")
 
         self.window = tk.Canvas(
             self.master,
