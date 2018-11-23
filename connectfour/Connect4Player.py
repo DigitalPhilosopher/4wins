@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-import Field as fd
+
+import connectfour.Field as fd
 
 class Connect4Player(ABC):
     def __init__(self, color):

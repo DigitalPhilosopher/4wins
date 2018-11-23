@@ -1,0 +1,5 @@
+from connectfour.Connect4 import Connect4
+
+from connectfour.HumanGUIPlayer import HumanGUIPlayer
+from connectfour.AlphaBetaPlayer import AlphaBetaPlayer
+from connectfour.MiniMaxPlayer import MiniMaxPlayer

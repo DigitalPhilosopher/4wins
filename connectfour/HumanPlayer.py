@@ -1,7 +1,7 @@
-import Connect4Player as c4p
 from tkinter import *
-import threading
-import Field as fd
+
+import connectfour.Connect4Player as c4p
+import connectfour.Field as fd
 
 
 class HumanPlayer(c4p.Connect4Player):

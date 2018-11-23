@@ -1,7 +1,8 @@
 import math
-import Connect4Player as c4p
-import Field as fd
 from collections import Counter
+
+import connectfour.Connect4Player as c4p
+import connectfour.Field as fd
 
 class MiniMaxPlayer(c4p.Connect4Player):
     def makeMove(self, field):

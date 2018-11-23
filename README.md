@@ -25,11 +25,14 @@ The fields filled with the pieces of the opponent are valued more, for the reaso
 
 ### Minimax
 The minimax algorithm is a algorithm which can be used for two player games in decision making. The algorithm looks into the possible moves and evaluates the best value. For each move the algorithm maximizes or minimizes the value of the field, based on which player has the turn. Considering the following decision tree, where a red node displays the turn of the maximizer and the green node displays the turn of the minimizer. The values at the leafs are the values of the field at the end:
+<br />
 ![Decision Tree minimax algorithm](photos/DecisionTreeMinimax.png?raw=true "Decision tree minimax algorithm")
+<br />
 The minimizer in the second generation would try to minimize the value of the field, so that the opponent has a worse position. Therefore the left turn in the left node, resulting in the value of 5 and the right turn in the right node, resulting in the value 3 are the best possible decision for the minimizer. The maximizer displayed in the root can then choose between the values 5 on the left path and 3 on the right path. Since a maximal value is wanted, the maximizer chooses the left path, resulting in the value 5.
+<br />
 ![Decision Tree minimax algorithm](photos/DecisionTreeMinimaxPath.png?raw=true "Decision tree minimax algorithm")
 
-### Alpha-beta
+### Alpha-beta pruning
 The alpha-beta pruning algorithm is based on the minimax algorithm. The algorithm uses two values, alpha and beta to store the best value which can be guaranteed by the maximizer and the minimizer. That enables the algorithm skipping parts of the tree which would definetely result in higher (or lower) values.
 
 

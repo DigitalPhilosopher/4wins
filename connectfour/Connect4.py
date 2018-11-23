@@ -1,5 +1,6 @@
-import Field as fd
 from collections import Counter
+
+import connectfour.Field as fd
 
 class Connect4:
     def __init__(self, playerRedFunction, playerYellowFunction):
