@@ -46,7 +46,7 @@ The following steps are neede to run the game:
 
 ### Available classes
 
-#### Connect4(Connect4Player, Connect4Player)
+#### [Connect4(Connect4Player, Connect4Player)](connectfour/Connect4.py)
 This is the class that runs the game. It takes two references for a class which implements the class [Connect4Player](connectfour/Connect4Player.py). It creates new objects using those class references. It calls the ```makeMove(field)``` function on the player's turn and ```win(field)```, ```lost(field)``` or ```draw(field)``` according to the players final state.
 
 #### [HumanGUIPlayer(color)](connectfour/HumanGUIPlayer.py)
