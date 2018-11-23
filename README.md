@@ -36,6 +36,28 @@ The minimizer in the second generation would try to minimize the value of the fi
 The alpha-beta pruning algorithm is based on the minimax algorithm. The algorithm uses two values, alpha and beta to store the best value which can be guaranteed by the maximizer and the minimizer. That enables the algorithm skipping parts of the tree which would definetely result in higher (or lower) values.
 
 
+## Usage
+
+### Installation
+The following steps are neede to run the game:
+1. Download the project as zip file https://github.com/DigitalPhilosopher/connect4/archive/develop.zip or clone the repository ```git clone https://github.com/DigitalPhilosopher/connect4.git```
+2. Run ```pip install .``` inside the project
+3. Import the package into your python project. An example for the usage is given in [this example for the game usage](example.py).
+
+### Available classes
+
+#### Connect4(Connect4Player, Connect4Player)
+This is the class that runs the game. It takes two references for a class which implements the class [Connect4Player](connectfour/Connect4Player.py). It creates new objects using those class references. It calls the ```makeMove(field)``` function on the player's turn and ```win(field)```, ```lost(field)``` or ```draw(field)``` according to the players final state.
+
+#### HumanGUIPlayer(color)
+This class implements [Connect4Player](connectfour/Connect4Player.py) and can be used as a player for the game. It opens a simple graphical user interface to get input from the user in the ```makeMove(field)``` function. 
+
+#### MiniMaxPlayer(color)
+This class implements [Connect4Player](connectfour/Connect4Player.py) and can be used as a player for the game. It uses the minimax algorithm to play the game of connectfour.
+
+#### AlphaBetaPlayer(color)
+This class implements [Connect4Player](connectfour/Connect4Player.py) and can be used as a player for the game. It uses the alpha-beta pruning algorithm to play the game of connectfour.
+
 ## References
 
 1. “4 In A Line!” Correlation, www.mathsisfun.com/games/connect4.html.
