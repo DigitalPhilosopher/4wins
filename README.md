@@ -49,13 +49,13 @@ The following steps are neede to run the game:
 #### Connect4(Connect4Player, Connect4Player)
 This is the class that runs the game. It takes two references for a class which implements the class [Connect4Player](connectfour/Connect4Player.py). It creates new objects using those class references. It calls the ```makeMove(field)``` function on the player's turn and ```win(field)```, ```lost(field)``` or ```draw(field)``` according to the players final state.
 
-#### HumanGUIPlayer(color)
+#### [HumanGUIPlayer(color)](connectfour/HumanGUIPlayer.py)
 This class implements [Connect4Player](connectfour/Connect4Player.py) and can be used as a player for the game. It opens a simple graphical user interface to get input from the user in the ```makeMove(field)``` function. 
 
-#### MiniMaxPlayer(color)
+#### [MiniMaxPlayer(color)](connectfour/MiniMaxPlayer.py)
 This class implements [Connect4Player](connectfour/Connect4Player.py) and can be used as a player for the game. It uses the minimax algorithm to play the game of connectfour.
 
-#### AlphaBetaPlayer(color)
+#### [AlphaBetaPlayer(color)](connectfour/AlphaBetaPlayer.py)
 This class implements [Connect4Player](connectfour/Connect4Player.py) and can be used as a player for the game. It uses the alpha-beta pruning algorithm to play the game of connectfour.
 
 ## References
