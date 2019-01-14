@@ -19,8 +19,6 @@ class HumanGUIPlayer(c4p.Connect4Player):
             height = self.FIELD_WINDOW_HEIGHT*fd.Field.FIELD_HEIGHT
         )
 
-        self.window.bind("<Button-1>", self.choosePosition)
-
         self.window.pack()
         
     def choosePosition(self, event):
@@ -66,8 +64,10 @@ class HumanGUIPlayer(c4p.Connect4Player):
         self.field = field
         self.possibleMove = None
         self.moveDecided = False
+        self.window.bind("<Button-1>", self.choosePosition)
         while not self.moveDecided:
             self.drawWindow()
+        self.window.unbind("<Button 1>")
         return self.move
     
     def won(self, field):
