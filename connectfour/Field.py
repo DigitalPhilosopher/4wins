@@ -18,20 +18,24 @@ class Field:
         return np.full([self.FIELD_HEIGHT, self.FIELD_LENGTH], self.NO_PLAYER)
     
     def winningPlayer(self):
-        possibleLines = [list(row) for row in self.field]
-        possibleLines.extend([list(col) for col in self.field.T])
-        possibleLines.extend([list(self.field.diagonal(i)) for i in range(-2,4)])
-        possibleLines.extend([list(self.field[::-1,:].diagonal(i)) for i in range(-2,4)])
-        for possibleLine in possibleLines:
-            while len(possibleLine) > 4:
-                possibleLines.append(possibleLine[0:4])
-                possibleLine.remove(possibleLine[0])
-        
-        for elementsInDiagonal in [set(possibleLine) for possibleLine in possibleLines]:
+        for elementsInDiagonal in [set(possibleLine) for possibleLine in self.get_possible_winning_lines()]:
             firstElement = elementsInDiagonal.pop()
             if len(elementsInDiagonal) == 0 and firstElement != self.NO_PLAYER:
                 return firstElement
         return self.NO_PLAYER
+    
+    def get_possible_winning_lines(self):
+        possibleLines = [list(row) for row in self.field]
+        possibleLines.extend([list(col) for col in self.field.T])
+        possibleLines.extend([list(self.field.diagonal(i)) for i in range(-2,4)])
+        possibleLines.extend([list(self.field[::-1,:].diagonal(i)) for i in range(-2,4)])
+
+        for possibleLine in possibleLines:
+            while len(possibleLine) > 4:
+                possibleLines.append(possibleLine[0:4])
+                possibleLine.remove(possibleLine[0])
+
+        return possibleLines
     
     def moveIsValid(self, move):
         if move >= len(self.field[0]) or move < 0:
