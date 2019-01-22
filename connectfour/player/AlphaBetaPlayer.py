@@ -1,5 +1,5 @@
 import math
-import connectfour.Connect4Heuristics as heuristics
+import connectfour.ai.Connect4Heuristics as heuristics
 
 from connectfour.player.Connect4Player import Connect4Player as c4p
 
