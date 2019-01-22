@@ -1,8 +1,7 @@
 import math
-from collections import Counter
-
 import connectfour.Connect4Player as c4p
 import connectfour.Field as fd
+import connectfour.Connect4Heuristics as heuristics
 
 class MiniMaxPlayer(c4p.Connect4Player):
     def makeMove(self, field):
@@ -24,7 +23,7 @@ class MiniMaxPlayer(c4p.Connect4Player):
         
         for move in availableMoves:
             if currentStep == maximalDepth:
-                heuristicValue = self.heuristic(field.copy().makeMove(move, playerToWin), playerToWin)
+                heuristicValue = heuristics.aggregatePossibleWinningLinesHeuristic(field.copy().makeMove(move, playerToWin), playerToWin)
             else:
                 _m, heuristicValue = self.minimax(currentStep+1, maximalDepth, playerToWin, fd.Field.RED_PLAYER if playerToMove == fd.Field.YELLOW_PLAYER else fd.Field.YELLOW_PLAYER, field.copy().makeMove(move, playerToMove))       
 
@@ -35,29 +34,6 @@ class MiniMaxPlayer(c4p.Connect4Player):
                 bestMove = move
                 bestValue = heuristicValue
         return bestMove, bestValue
-
-    def heuristic(self, field, player):
-        opponent = fd.Field.RED_PLAYER if player == fd.Field.YELLOW_PLAYER else fd.Field.YELLOW_PLAYER
-        arrayField = field.getField()
-
-        possibleLines = [list(row) for row in arrayField]
-        possibleLines.extend([list(col) for col in arrayField.T])
-        possibleLines.extend([list(arrayField.diagonal(i)) for i in range(-2,4)])
-        possibleLines.extend([list(arrayField[::-1,:].diagonal(i)) for i in range(-2,4)])
-        for possibleLine in possibleLines:
-            while len(possibleLine) > 4:
-                possibleLines.append(possibleLine[0:4])
-                possibleLine.remove(possibleLine[0])
-        
-        value = 0
-        for line in possibleLines:
-            count = Counter(line)
-            if player in count:
-                if not opponent in count:
-                    value += count[player] ** 2
-            elif opponent in count:
-                value -= count[opponent] ** 3
-        return value
 
     def won(self, field):
         pass
