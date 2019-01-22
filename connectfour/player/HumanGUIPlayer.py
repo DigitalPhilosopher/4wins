@@ -1,9 +1,9 @@
 import tkinter as tk
-
-import connectfour.Connect4Player as c4p
 import connectfour.Field as fd
 
-class HumanGUIPlayer(c4p.Connect4Player):
+from connectfour.player.Connect4Player import Connect4Player as c4p
+
+class HumanGUIPlayer(c4p):
     FIELD_WINDOW_LENGTH = 100
     FIELD_WINDOW_HEIGHT = 100
 

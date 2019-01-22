@@ -1,8 +1,9 @@
 import math
-import connectfour.Connect4Player as c4p
 import connectfour.Connect4Heuristics as heuristics
 
-class AlphaBetaPlayer(c4p.Connect4Player):
+from connectfour.player.Connect4Player import Connect4Player as c4p
+
+class AlphaBetaPlayer(c4p):
     def makeMove(self, field):
         move, _h = self.alphabeta(field, 4, -math.inf, math.inf, True)
         return move

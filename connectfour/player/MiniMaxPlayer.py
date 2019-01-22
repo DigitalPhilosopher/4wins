@@ -1,9 +1,10 @@
 import math
-import connectfour.Connect4Player as c4p
 import connectfour.Field as fd
 import connectfour.Connect4Heuristics as heuristics
 
-class MiniMaxPlayer(c4p.Connect4Player):
+from connectfour.player.Connect4Player import Connect4Player as c4p
+
+class MiniMaxPlayer(c4p):
     def makeMove(self, field):
         move, _h = self.minimax(0, 4, self.color, self.color, field)
         return move

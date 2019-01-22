@@ -1,10 +1,10 @@
-from tkinter import *
-
-import connectfour.Connect4Player as c4p
 import connectfour.Field as fd
 
+from tkinter import *
+from connectfour.player.Connect4Player import Connect4Player as c4p
 
-class HumanPlayer(c4p.Connect4Player):
+
+class HumanPlayer(c4p):
     def __init__(self, color):
         super(HumanPlayer, self).__init__(color)
 
