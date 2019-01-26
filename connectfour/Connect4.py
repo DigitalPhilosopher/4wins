@@ -3,11 +3,14 @@ from collections import Counter
 import connectfour.Field as fd
 
 class Connect4:
-    def __init__(self, playerRedFunction, playerYellowFunction):
+    def __init__(self, playerRed, playerYellow):
         self.field = fd.Field()
 
-        self.playerRedFunction = playerRedFunction(fd.Field.RED_PLAYER)
-        self.playerYellowFunction = playerYellowFunction(fd.Field.YELLOW_PLAYER)
+        self.playerRedFunction = playerRed
+        self.playerYellowFunction = playerYellow
+
+        self.playerRedFunction.set_color(fd.Field.RED_PLAYER)
+        self.playerYellowFunction.set_color(fd.Field.YELLOW_PLAYER)
         
         self.playerForTurn = fd.Field.RED_PLAYER
         self.playerFunction = self.playerRedFunction

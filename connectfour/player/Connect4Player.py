@@ -3,7 +3,10 @@ from abc import ABC, abstractmethod
 import connectfour.Field as fd
 
 class Connect4Player(ABC):
-    def __init__(self, color):
+    def __init__(self):
+        pass
+
+    def set_color(self, color):
         self.color = color
         self.opponentColor = fd.Field.RED_PLAYER if color == fd.Field.YELLOW_PLAYER else fd.Field.YELLOW_PLAYER
 

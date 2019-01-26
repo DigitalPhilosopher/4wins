@@ -7,8 +7,8 @@ class HumanPlayer(c4p):
     FIELD_WINDOW_LENGTH = 100
     FIELD_WINDOW_HEIGHT = 100
 
-    def __init__(self, color):
-        super(HumanPlayer, self).__init__(color)
+    def __init__(self):
+        super(HumanPlayer, self).__init__()
 
         self.master = tk.Tk()
         self.master.title("Connect Four")
