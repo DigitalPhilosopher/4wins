@@ -2,6 +2,8 @@ import arcade, queue, threading
 import connectfour.Field as fd
 import connectfour.Connect4 as cf
 from connectfour.player.Connect4Player import Connect4Player as c4p
+from connectfour.player.AlphaBetaPlayer import AlphaBetaPlayer
+from connectfour.player.MiniMaxPlayer import MiniMaxPlayer
 
 MARGIN = 15
 RADIUS = 25
@@ -18,6 +20,7 @@ RED_PLAYER_NAME = "RED"
 YELLOW_PLAYER_NAME = "YELLOW"
 DRAW_PLAYER_NAME = "-"
 GAME_OVER_TEXT = "GAME OVER"
+MENU_TEXT = "MENU"
 
 sem = threading.Semaphore()
 
@@ -123,6 +126,16 @@ class RestartTextButton(TextButton):
         self.action_caller.restart()
 
 
+class StartTextButton(TextButton):
+    def __init__(self, center_x, center_y, action_caller):
+        super().__init__(center_x, center_y, 150, 40, "Start Game", 18, "Arial")
+        self.action_caller = action_caller
+
+    def on_release(self):
+        super().on_release()
+        self.action_caller.start()
+
+
 class ToMenuTextButton(TextButton):
     def __init__(self, center_x, center_y, action_caller):
         super().__init__(center_x, center_y, 150, 40, "Menu", 18, "Arial")
@@ -131,6 +144,25 @@ class ToMenuTextButton(TextButton):
     def on_release(self):
         super().on_release()
         self.action_caller.to_menu()
+
+
+class ChoosePlayerTextButton(TextButton):
+    def __init__(self, center_x, center_y, action_caller, color, player_function, text):
+        super().__init__(center_x, center_y, 125, 40, text, 18, "Arial")
+        self.action_caller = action_caller
+        self.color = color
+        self.player_function = player_function
+
+    def on_release(self):
+        super().on_release()
+        if self.color == fd.Field.RED_PLAYER:
+            self.face_color = arcade.color.RED
+        else:
+            self.face_color = arcade.color.YELLOW
+        self.action_caller.set_player(self.color, self.player_function, self)
+    
+    def turn_off_pressed(self):
+        self.face_color = arcade.color.BABY_BLUE
 
 
 
@@ -143,6 +175,7 @@ class ConnectFour(arcade.Window):
         arcade.set_background_color(arcade.color.BLUE)
 
         self.game_over_button_list = []
+        self.menu_button_list = []
 
         width = 150
         start_y = SCREEN_HEIGHT / 2 - 50
@@ -156,7 +189,52 @@ class ConnectFour(arcade.Window):
         to_menu_button = ToMenuTextButton(start_x, start_y, self)
         self.game_over_button_list.append(to_menu_button)
 
-        self.start_game_setup()
+        width = 100
+        start_y = SCREEN_HEIGHT / 2 + 40
+        start_x = SCREEN_WIDTH / 2 - (width * 1.5)
+        red_player_human_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, HumanPlayer(self), "Human")
+        self.menu_button_list.append(red_player_human_button)
+
+        width = 100
+        start_y = SCREEN_HEIGHT / 2 + 40
+        start_x = SCREEN_WIDTH / 2
+        red_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, AlphaBetaPlayer(), "AlphaBeta")
+        self.menu_button_list.append(red_player_alphabeta_button)
+
+        width = 100
+        start_y = SCREEN_HEIGHT / 2 + 40
+        start_x = SCREEN_WIDTH / 2 + (width * 1.5)
+        red_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, MiniMaxPlayer(), "MiniMax")
+        self.menu_button_list.append(red_player_minimax_button)
+
+        width = 100
+        start_y = SCREEN_HEIGHT / 2 - 60
+        start_x = SCREEN_WIDTH / 2 - (width * 1.5)
+        yellow_player_human_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, HumanPlayer(self), "Human")
+        self.menu_button_list.append(yellow_player_human_button)
+
+        width = 100
+        start_y = SCREEN_HEIGHT / 2 - 60
+        start_x = SCREEN_WIDTH / 2
+        yellow_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, AlphaBetaPlayer(), "AlphaBeta")
+        self.menu_button_list.append(yellow_player_alphabeta_button)
+
+        width = 100
+        start_y = SCREEN_HEIGHT / 2 - 60
+        start_x = SCREEN_WIDTH / 2 + (width * 1.5)
+        yellow_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, MiniMaxPlayer(), "MiniMax")
+        self.menu_button_list.append(yellow_player_minimax_button)
+
+        start_y = SCREEN_HEIGHT / 2 - 150
+        start_x = SCREEN_WIDTH / 2
+        start_button = StartTextButton(start_x, start_y, self)
+        self.menu_button_list.append(start_button)
+
+        yellow_player_human_button.on_press()
+        yellow_player_human_button.on_release()
+        red_player_human_button.on_press()
+        red_player_human_button.on_release()
+        self.current_state = MENU
     
 
     def to_menu(self):
@@ -169,6 +247,10 @@ class ConnectFour(arcade.Window):
         self.start_game_setup()
     
 
+    def start(self):
+        self.start_game_setup()
+    
+
     def start_game_setup(self):
         sem.acquire() # Needs to be acquired, before the start of the game
 
@@ -178,8 +260,8 @@ class ConnectFour(arcade.Window):
 
         self.field = fd.Field()
 
-        self.player = HumanPlayer(self)
-        self.oplayer = HumanPlayer(self)
+        self.player = self.red_player_function
+        self.oplayer = self.yellow_player_function
 
         self.chosing = False
         
@@ -222,6 +304,7 @@ class ConnectFour(arcade.Window):
 
     def make_move(self, field, color):
         self.field = field
+        self.player_color = color
         if color == fd.Field.RED_PLAYER:
             self.color = arcade.color.RED
         else:
@@ -240,6 +323,8 @@ class ConnectFour(arcade.Window):
             self.draw_playing()
         elif self.current_state == GAME_OVER:
             self.draw_gameover()
+        elif self.current_state == MENU:
+            self.draw_menu()
 
 
     def draw_gameover(self):
@@ -259,6 +344,27 @@ class ConnectFour(arcade.Window):
         start_y = SCREEN_HEIGHT / 2
         start_x = SCREEN_WIDTH / 2 - width / 2
         arcade.draw_text(winning_player_text, start_x, start_y, arcade.color.BLACK, 24, width=width, align="center")
+    
+    def draw_menu(self):
+        arcade.start_render()
+
+        for button in self.menu_button_list:
+            button.draw()
+
+        width = 350
+        start_y = SCREEN_HEIGHT / 2 + 150
+        start_x = SCREEN_WIDTH / 2 - width / 2
+        arcade.draw_text(MENU_TEXT, start_x, start_y, arcade.color.BLACK, 40, width=width, align="center")
+
+        width = 150
+        start_y = SCREEN_HEIGHT / 2 + 75
+        start_x = MARGIN
+        arcade.draw_text("Red player:", start_x, start_y, arcade.color.BLACK, 12, width=width, align="left")
+        
+        width = 150
+        start_y = SCREEN_HEIGHT / 2 - 25
+        start_x = MARGIN
+        arcade.draw_text("Yellow player:", start_x, start_y, arcade.color.BLACK, 12, width=width, align="left")
     
 
     def draw_playing(self):
@@ -318,11 +424,25 @@ class ConnectFour(arcade.Window):
             self.on_mouse_release_playing(x, y, dx, dy)
         elif self.current_state == GAME_OVER:
             self.on_mouse_release_game_over(x, y, dx, dy)
+        elif self.current_state == MENU:
+            self.on_mouse_release_menu(x, y, dx, dy)
 
 
     def on_mouse_press(self, x, y, dx, dy):
         if self.current_state == GAME_OVER:
             self.on_mouse_press_game_over(x, y, dx, dy)
+        elif self.current_state == MENU:
+            self.on_mouse_press_menu(x, y, dx, dy)
+
+    
+    def set_player(self, color, player_function, button):
+        self.turn_off_pressed_buttons_with_color(self.menu_button_list, button, color)
+        if color == fd.Field.RED_PLAYER:
+            self.red_player_function = player_function
+            self.red_pressed_button = button
+        else:
+            self.yellow_player_function = player_function
+            self.yellow_pressed_button = button
 
 
     def on_mouse_press_game_over(self, x, y, button, key_modifiers):
@@ -331,6 +451,19 @@ class ConnectFour(arcade.Window):
 
     def on_mouse_release_game_over(self, x, y, button, key_modifiers):
         self.check_mouse_release_for_buttons(x, y, self.game_over_button_list)
+
+
+    def on_mouse_press_menu(self, x, y, button, key_modifiers):
+        self.check_mouse_press_for_buttons(x, y, self.menu_button_list)
+
+
+    def on_mouse_release_menu(self, x, y, button, key_modifiers):
+        self.check_mouse_release_for_buttons(x, y, self.menu_button_list)
+    
+    def turn_off_pressed_buttons_with_color(self, button_list, pressed_button, color):
+        for button in button_list:
+            if type(button) == ChoosePlayerTextButton and color == button.color and not button == pressed_button:
+                button.turn_off_pressed()
     
     def check_mouse_press_for_buttons(self, x, y, button_list):
         for button in button_list:
@@ -352,6 +485,8 @@ class ConnectFour(arcade.Window):
 
     def on_mouse_release_playing(self, x, y, dx, dy):
         self.move = self.get_pick_from_position()
+        self.field.makeMove(self.move, self.player_color)
+        self.chosing = False
         sem.release()
         
 
