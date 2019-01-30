@@ -1,5 +1,7 @@
-import arcade
+import arcade, queue, threading
 import connectfour.Field as fd
+import connectfour.Connect4 as cf
+from connectfour.player.Connect4Player import Connect4Player as c4p
 
 MARGIN = 15
 RADIUS = 25
@@ -7,6 +9,31 @@ RADIUS = 25
 SCREEN_WIDTH = (2 * RADIUS + MARGIN) * fd.Field.FIELD_LENGTH + MARGIN
 SCREEN_HEIGHT = (2 * RADIUS + MARGIN) * (fd.Field.FIELD_HEIGHT + 1) + MARGIN
 PICK_ROW = (2 * RADIUS + MARGIN) * fd.Field.FIELD_HEIGHT + MARGIN + RADIUS
+
+sem = threading.Semaphore()
+
+
+class HumanPlayer(c4p):
+    def __init__(self, func):
+        super(HumanPlayer, self).__init__()
+
+        self.func = func
+
+    def makeMove(self, field):
+        return self.func.make_move(field)
+    
+    def won(self, field):
+        pass
+
+    def lost(self, field):
+        pass
+    
+    def draw(self, field):
+        pass
+    
+    def drawFinal(self):
+        pass
+
 
 
 
@@ -21,12 +48,31 @@ class ConnectFour(arcade.Window):
 
         self.field = fd.Field()
 
+        self.player = HumanPlayer(self)
+        self.oplayer = HumanPlayer(self)
+
         self.position_x = 50
+
+        sem.acquire()
+        game = cf(self.player, self.oplayer)
+        t = threading.Thread(target=game.play)
+        t.daemon = True
+        t.start()
+
     
+
+    def make_move(self, field):
+        self.field = field
+        print(field.getField())
+
+        sem.acquire()
+        ret = self.move
+        
+        return ret
 
     def on_draw(self):
         arcade.start_render()
-        
+
         self.draw_grid()
 
         arcade.draw_circle_filled(self.position_x, PICK_ROW, RADIUS, arcade.color.YELLOW)
@@ -38,7 +84,7 @@ class ConnectFour(arcade.Window):
             for column in range(fd.Field.FIELD_LENGTH):
                 if field[fd.Field.FIELD_HEIGHT - row - 1][column] == fd.Field.RED_PLAYER:
                     color = arcade.color.RED
-                elif field[row][column] == fd.Field.YELLOW_PLAYER:
+                elif field[fd.Field.FIELD_HEIGHT - row - 1][column] == fd.Field.YELLOW_PLAYER:
                     color = arcade.color.YELLOW
                 else:
                     color = arcade.color.BABY_BLUE
@@ -71,8 +117,8 @@ class ConnectFour(arcade.Window):
     
 
     def on_mouse_release(self, x, y, dx, dy):
-        move = self.get_pick_from_position()
-        self.field.makeMove(move, fd.Field.RED_PLAYER)
+        self.move = self.get_pick_from_position()
+        sem.release()
         
 
 
