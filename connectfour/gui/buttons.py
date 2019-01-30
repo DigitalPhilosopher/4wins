@@ -1,5 +1,7 @@
 import arcade
 import connectfour.Field as fd
+from connectfour.gui.defines import *
+from connectfour.gui.players import *
 
 class TextButton:
     def __init__(self,
@@ -119,3 +121,48 @@ class ChoosePlayerTextButton(TextButton):
     
     def turn_off_pressed(self):
         self.face_color = arcade.color.BABY_BLUE
+
+
+def create_menu_button_list(game):
+    menu_button_list = addRedPlayerButtons([], game)
+    menu_button_list = addYellowPlayerButtons(menu_button_list, game)
+    menu_button_list = addStartButton(menu_button_list, game)
+
+    return menu_button_list
+
+def addRedPlayerButtons(button_list, game):
+    y_button_position = SCREEN_HEIGHT / 2 + 40
+    return addPlayerButtons(button_list, game, y_button_position, fd.Field.RED_PLAYER)
+
+
+def addYellowPlayerButtons(button_list, game):
+    y_button_position = SCREEN_HEIGHT / 2 - 60
+    return addPlayerButtons(button_list, game, y_button_position, fd.Field.YELLOW_PLAYER)
+
+def addStartButton(button_list, game):
+    start_y = SCREEN_HEIGHT / 2 - 150
+    start_x = SCREEN_WIDTH / 2
+    start_button = StartTextButton(start_x, start_y, game)
+    button_list.append(start_button)
+
+    return button_list
+
+def addPlayerButtons(button_list, game, y_button_position, color):
+    button_width = 100
+    x_button_position_center = SCREEN_WIDTH / 2
+    x_button_position_left = x_button_position_center - (button_width * 1.5)
+    x_button_position_right = x_button_position_center + (button_width * 1.5)
+
+    player_human_button = ChoosePlayerTextButton(x_button_position_left, y_button_position, game, color, HumanPlayer, "Human")
+    button_list.append(player_human_button)
+
+    player_alphabeta_button = ChoosePlayerTextButton(x_button_position_center, y_button_position, game, color, AlphaBetaPlayer, "AlphaBeta")
+    button_list.append(player_alphabeta_button)
+
+    player_minimax_button = ChoosePlayerTextButton(x_button_position_right, y_button_position, game, color, MiniMaxPlayer, "MiniMax")
+    button_list.append(player_minimax_button)
+    
+    player_human_button.on_press()
+    player_human_button.on_release()
+
+    return button_list

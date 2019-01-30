@@ -4,23 +4,7 @@ import connectfour.Connect4 as cf
 
 from connectfour.gui.buttons import *
 from connectfour.gui.players import *
-
-MARGIN = 15
-RADIUS = 25
-
-SCREEN_WIDTH = (2 * RADIUS + MARGIN) * fd.Field.FIELD_LENGTH + MARGIN
-SCREEN_HEIGHT = (2 * RADIUS + MARGIN) * (fd.Field.FIELD_HEIGHT + 1) + MARGIN
-PICK_ROW = (2 * RADIUS + MARGIN) * fd.Field.FIELD_HEIGHT + MARGIN + RADIUS
-
-PLAYING = 0
-GAME_OVER = 1
-MENU = 2
-
-RED_PLAYER_NAME = "RED"
-YELLOW_PLAYER_NAME = "YELLOW"
-DRAW_PLAYER_NAME = "-"
-GAME_OVER_TEXT = "GAME OVER"
-MENU_TEXT = "MENU"
+from connectfour.gui.defines import *
 
 sem = threading.Semaphore()
 
@@ -49,51 +33,8 @@ class ConnectFour(arcade.Window):
         to_menu_button = ToMenuTextButton(start_x, start_y, self)
         self.game_over_button_list.append(to_menu_button)
 
-        width = 100
-        start_y = SCREEN_HEIGHT / 2 + 40
-        start_x = SCREEN_WIDTH / 2 - (width * 1.5)
-        red_player_human_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, HumanPlayer(self), "Human")
-        self.menu_button_list.append(red_player_human_button)
-
-        width = 100
-        start_y = SCREEN_HEIGHT / 2 + 40
-        start_x = SCREEN_WIDTH / 2
-        red_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, AlphaBetaPlayer(self), "AlphaBeta")
-        self.menu_button_list.append(red_player_alphabeta_button)
-
-        width = 100
-        start_y = SCREEN_HEIGHT / 2 + 40
-        start_x = SCREEN_WIDTH / 2 + (width * 1.5)
-        red_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, MiniMaxPlayer(self), "MiniMax")
-        self.menu_button_list.append(red_player_minimax_button)
-
-        width = 100
-        start_y = SCREEN_HEIGHT / 2 - 60
-        start_x = SCREEN_WIDTH / 2 - (width * 1.5)
-        yellow_player_human_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, HumanPlayer(self), "Human")
-        self.menu_button_list.append(yellow_player_human_button)
-
-        width = 100
-        start_y = SCREEN_HEIGHT / 2 - 60
-        start_x = SCREEN_WIDTH / 2
-        yellow_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, AlphaBetaPlayer(self), "AlphaBeta")
-        self.menu_button_list.append(yellow_player_alphabeta_button)
-
-        width = 100
-        start_y = SCREEN_HEIGHT / 2 - 60
-        start_x = SCREEN_WIDTH / 2 + (width * 1.5)
-        yellow_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, MiniMaxPlayer(self), "MiniMax")
-        self.menu_button_list.append(yellow_player_minimax_button)
-
-        start_y = SCREEN_HEIGHT / 2 - 150
-        start_x = SCREEN_WIDTH / 2
-        start_button = StartTextButton(start_x, start_y, self)
-        self.menu_button_list.append(start_button)
-
-        yellow_player_human_button.on_press()
-        yellow_player_human_button.on_release()
-        red_player_human_button.on_press()
-        red_player_human_button.on_release()
+        self.menu_button_list = create_menu_button_list(self)
+        print(self.menu_button_list)
         self.current_state = MENU
     
 
@@ -120,8 +61,8 @@ class ConnectFour(arcade.Window):
 
         self.field = fd.Field()
 
-        self.player = self.red_player_function
-        self.oplayer = self.yellow_player_function
+        self.player = self.red_player_function(self)
+        self.oplayer = self.yellow_player_function(self)
 
         self.chosing = False
         
