@@ -6,45 +6,32 @@ from connectfour.gui.buttons import *
 from connectfour.gui.players import *
 from connectfour.gui.defines import *
 
-sem = threading.Semaphore()
-
-
-
 class ConnectFour(arcade.Window):
     
     def __init__(self, width, height):
-
         super().__init__(width, height)
+
+        self.semaphore_chosing_move = threading.Semaphore()
 
         arcade.set_background_color(arcade.color.BLUE)
 
-        self.game_over_button_list = []
-        self.menu_button_list = []
+        self.create_buttons()
 
-        width = 150
-        start_y = SCREEN_HEIGHT / 2 - 50
-        start_x = SCREEN_WIDTH / 2 - (width / 2 + 10)
-        restart_button = RestartTextButton(start_x, start_y, self)
-        self.game_over_button_list.append(restart_button)
-
-        width = 150
-        start_y = SCREEN_HEIGHT / 2 - 50
-        start_x = SCREEN_WIDTH / 2 + (width / 2 + 10)
-        to_menu_button = ToMenuTextButton(start_x, start_y, self)
-        self.game_over_button_list.append(to_menu_button)
-
-        self.menu_button_list = create_menu_button_list(self)
-        print(self.menu_button_list)
         self.current_state = MENU
+    
+    def create_buttons(self):
+        self.menu_button_list = []
+        self.menu_button_list = create_menu_button_list(self)
+        self.game_over_button_list = create_game_over_button_list(self)
     
 
     def to_menu(self):
-        sem.release()
+        self.semaphore_chosing_move.release()
         self.current_state = MENU
     
 
     def restart(self):
-        sem.release()
+        self.semaphore_chosing_move.release()
         self.start_game_setup()
     
 
@@ -53,7 +40,7 @@ class ConnectFour(arcade.Window):
     
 
     def start_game_setup(self):
-        sem.acquire() # Needs to be acquired, before the start of the game
+        self.semaphore_chosing_move.acquire() # Needs to be acquired, before the start of the game
 
         self.set_mouse_visible(False)
 
@@ -77,30 +64,29 @@ class ConnectFour(arcade.Window):
 
     
     def lost(self, field, color):
-        self.field = field
-        self.current_state = GAME_OVER
-        self.set_mouse_visible(True)
-        if color == fd.Field.RED_PLAYER:
-            self.winning_player = YELLOW_PLAYER_NAME
-        else:
-            self.winning_player = RED_PLAYER_NAME
+        self.game_finished(color, field)
 
     
     def won(self, field, color):
+        self.game_finished(color, field)
+
+    def draw(self, field, color):
+        self.game_finished(color, field)
+    
+    def game_finished(self, winner, field):
+        self.set_mouse_visible(True)
+
         self.field = field
         self.current_state = GAME_OVER
-        self.set_mouse_visible(True)
+        self.set_winner_text(winner)
+
+    def set_winner_text(self, color):
         if color == fd.Field.RED_PLAYER:
             self.winning_player = RED_PLAYER_NAME
-        else:
+        elif color == fd.Field.YELLOW_PLAYER:
             self.winning_player = YELLOW_PLAYER_NAME
-
-    
-    def draw(self, field, color):
-        self.field = field
-        self.current_state = GAME_OVER
-        self.set_mouse_visible(True)
-        self.winning_player = DRAW_PLAYER_NAME
+        else:
+            self.winning_player = DRAW_PLAYER_NAME
 
 
     def make_move(self, field, color):
@@ -112,11 +98,10 @@ class ConnectFour(arcade.Window):
             self.color = arcade.color.YELLOW
         self.chosing = True
 
-        sem.acquire()
+        self.semaphore_chosing_move.acquire()
         self.chosing = False
-        ret = self.move
         
-        return ret
+        return self.move
 
 
     def on_draw(self):
@@ -288,7 +273,7 @@ class ConnectFour(arcade.Window):
         self.move = self.get_pick_from_position()
         self.field.makeMove(self.move, self.player_color)
         self.chosing = False
-        sem.release()
+        self.semaphore_chosing_move.release()
         
 
 

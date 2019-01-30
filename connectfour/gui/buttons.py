@@ -166,3 +166,17 @@ def addPlayerButtons(button_list, game, y_button_position, color):
     player_human_button.on_release()
 
     return button_list
+
+
+def create_game_over_button_list(game):
+    button_width = 150
+    x_button_position_center = SCREEN_WIDTH / 2
+    x_button_position_left = x_button_position_center - (button_width / 2 + 10)
+    x_button_position_right = x_button_position_center + (button_width / 2 + 10)
+    y_button_position = SCREEN_HEIGHT / 2 - 50
+
+    button_list = []
+    button_list.append(RestartTextButton(x_button_position_left, y_button_position, game))
+    button_list.append(ToMenuTextButton(x_button_position_right, y_button_position, game))
+
+    return button_list
