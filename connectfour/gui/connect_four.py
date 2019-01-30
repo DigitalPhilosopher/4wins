@@ -2,8 +2,6 @@ import arcade, queue, threading
 import connectfour.Field as fd
 import connectfour.Connect4 as cf
 
-from connectfour.player.AlphaBetaPlayer import AlphaBetaPlayer
-from connectfour.player.MiniMaxPlayer import MiniMaxPlayer
 from connectfour.gui.buttons import *
 from connectfour.gui.players import *
 
@@ -60,13 +58,13 @@ class ConnectFour(arcade.Window):
         width = 100
         start_y = SCREEN_HEIGHT / 2 + 40
         start_x = SCREEN_WIDTH / 2
-        red_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, AlphaBetaPlayer(), "AlphaBeta")
+        red_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, AlphaBetaPlayer(self), "AlphaBeta")
         self.menu_button_list.append(red_player_alphabeta_button)
 
         width = 100
         start_y = SCREEN_HEIGHT / 2 + 40
         start_x = SCREEN_WIDTH / 2 + (width * 1.5)
-        red_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, MiniMaxPlayer(), "MiniMax")
+        red_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.RED_PLAYER, MiniMaxPlayer(self), "MiniMax")
         self.menu_button_list.append(red_player_minimax_button)
 
         width = 100
@@ -78,13 +76,13 @@ class ConnectFour(arcade.Window):
         width = 100
         start_y = SCREEN_HEIGHT / 2 - 60
         start_x = SCREEN_WIDTH / 2
-        yellow_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, AlphaBetaPlayer(), "AlphaBeta")
+        yellow_player_alphabeta_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, AlphaBetaPlayer(self), "AlphaBeta")
         self.menu_button_list.append(yellow_player_alphabeta_button)
 
         width = 100
         start_y = SCREEN_HEIGHT / 2 - 60
         start_x = SCREEN_WIDTH / 2 + (width * 1.5)
-        yellow_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, MiniMaxPlayer(), "MiniMax")
+        yellow_player_minimax_button = ChoosePlayerTextButton(start_x, start_y, self, fd.Field.YELLOW_PLAYER, MiniMaxPlayer(self), "MiniMax")
         self.menu_button_list.append(yellow_player_minimax_button)
 
         start_y = SCREEN_HEIGHT / 2 - 150
