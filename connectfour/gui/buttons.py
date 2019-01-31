@@ -132,6 +132,7 @@ def create_menu_button_list(game):
 
     return menu_button_list
 
+
 def addStartButton(button_list, game):
     start_y = SCREEN_HEIGHT / 2 - 150
     start_x = SCREEN_WIDTH / 2
@@ -139,6 +140,7 @@ def addStartButton(button_list, game):
     button_list.append(start_button)
 
     return button_list
+
 
 def addRedPlayerButtons(button_list, game):
     y_button_position = SCREEN_HEIGHT / 2 + 40
@@ -149,25 +151,42 @@ def addYellowPlayerButtons(button_list, game):
     y_button_position = SCREEN_HEIGHT / 2 - 60
     return addPlayerButtons(button_list, game, y_button_position, fd.Field.YELLOW_PLAYER)
 
+
 def addPlayerButtons(button_list, game, y_button_position, color):
+    button_list.append(create_player_human_button(game, y_button_position, color))
+    button_list.append(create_player_alphabeta_button(game, y_button_position, color))
+    button_list.append(create_player_minimax_button(game, y_button_position, color))
+
+    return button_list
+
+
+def create_player_human_button(game, y_button_position, color):
+    (x_button_position_left, _, _) = calculate_player_button_positions()
+    player_human_button = ChoosePlayerTextButton(x_button_position_left, y_button_position, game, color, HumanPlayer, "Human")
+    
+    player_human_button.on_press()
+    player_human_button.on_release()
+
+    return player_human_button
+
+
+def create_player_alphabeta_button(game, y_button_position, color):
+    (_, x_button_position_center, _) = calculate_player_button_positions()
+    return ChoosePlayerTextButton(x_button_position_center, y_button_position, game, color, AlphaBetaPlayer, "AlphaBeta")
+
+
+def create_player_minimax_button(game, y_button_position, color):
+    (_, _, x_button_position_right) = calculate_player_button_positions()
+    return ChoosePlayerTextButton(x_button_position_right, y_button_position, game, color, MiniMaxPlayer, "MiniMax")
+
+
+def calculate_player_button_positions():
     button_width = 100
     x_button_position_center = SCREEN_WIDTH / 2
     x_button_position_left = x_button_position_center - (button_width * 1.5)
     x_button_position_right = x_button_position_center + (button_width * 1.5)
 
-    player_human_button = ChoosePlayerTextButton(x_button_position_left, y_button_position, game, color, HumanPlayer, "Human")
-    button_list.append(player_human_button)
-
-    player_alphabeta_button = ChoosePlayerTextButton(x_button_position_center, y_button_position, game, color, AlphaBetaPlayer, "AlphaBeta")
-    button_list.append(player_alphabeta_button)
-
-    player_minimax_button = ChoosePlayerTextButton(x_button_position_right, y_button_position, game, color, MiniMaxPlayer, "MiniMax")
-    button_list.append(player_minimax_button)
-    
-    player_human_button.on_press()
-    player_human_button.on_release()
-
-    return button_list
+    return (x_button_position_left, x_button_position_center, x_button_position_right)
 
 
 def create_game_over_button_list(game):
@@ -178,13 +197,16 @@ def create_game_over_button_list(game):
 
     return button_list
 
+
 def create_restart_button(game):
     (x_button_position_left, _, y_button_position) = calculate_game_over_button_positions()
     return RestartTextButton(x_button_position_left, y_button_position, game)
 
+
 def create_menu_button(game):
     (_, x_button_position_right, y_button_position) = calculate_game_over_button_positions()
     return ToMenuTextButton(x_button_position_right, y_button_position, game)
+
 
 def calculate_game_over_button_positions():
     button_width = 150
@@ -195,18 +217,22 @@ def calculate_game_over_button_positions():
 
     return (x_button_position_left, x_button_position_right, y_button_position)
 
+
 def turn_off_pressed_buttons_with_color(button_list, pressed_button, color):
     for button in button_list:
         if is_button_to_turn_off(button, pressed_button, color):
             button.turn_off_pressed()
 
+
 def is_button_to_turn_off(button, pressed_button, color):
     return type(button) == ChoosePlayerTextButton and color == button.color and not button == pressed_button
+
 
 def check_mouse_press_for_buttons(x, y, button_list):
     for button in button_list:
         if point_is_in_button(x, y, button):
             button.on_press()
+
 
 def point_is_in_button(x, y, button):
     if x > button.center_x + button.width / 2:
