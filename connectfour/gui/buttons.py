@@ -124,11 +124,21 @@ class ChoosePlayerTextButton(TextButton):
 
 
 def create_menu_button_list(game):
-    menu_button_list = addRedPlayerButtons([], game)
-    menu_button_list = addYellowPlayerButtons(menu_button_list, game)
+    menu_button_list = []
+
     menu_button_list = addStartButton(menu_button_list, game)
+    menu_button_list = addRedPlayerButtons(menu_button_list, game)
+    menu_button_list = addYellowPlayerButtons(menu_button_list, game)
 
     return menu_button_list
+
+def addStartButton(button_list, game):
+    start_y = SCREEN_HEIGHT / 2 - 150
+    start_x = SCREEN_WIDTH / 2
+    start_button = StartTextButton(start_x, start_y, game)
+    button_list.append(start_button)
+
+    return button_list
 
 def addRedPlayerButtons(button_list, game):
     y_button_position = SCREEN_HEIGHT / 2 + 40
@@ -138,14 +148,6 @@ def addRedPlayerButtons(button_list, game):
 def addYellowPlayerButtons(button_list, game):
     y_button_position = SCREEN_HEIGHT / 2 - 60
     return addPlayerButtons(button_list, game, y_button_position, fd.Field.YELLOW_PLAYER)
-
-def addStartButton(button_list, game):
-    start_y = SCREEN_HEIGHT / 2 - 150
-    start_x = SCREEN_WIDTH / 2
-    start_button = StartTextButton(start_x, start_y, game)
-    button_list.append(start_button)
-
-    return button_list
 
 def addPlayerButtons(button_list, game, y_button_position, color):
     button_width = 100
@@ -177,11 +179,11 @@ def create_game_over_button_list(game):
     return button_list
 
 def create_restart_button(game):
-    (x_button_position_left, x_button_position_right, y_button_position) = calculate_game_over_button_positions()
+    (x_button_position_left, _, y_button_position) = calculate_game_over_button_positions()
     return RestartTextButton(x_button_position_left, y_button_position, game)
 
 def create_menu_button(game):
-    (x_button_position_left, x_button_position_right, y_button_position) = calculate_game_over_button_positions()
+    (_, x_button_position_right, y_button_position) = calculate_game_over_button_positions()
     return ToMenuTextButton(x_button_position_right, y_button_position, game)
 
 def calculate_game_over_button_positions():
@@ -195,20 +197,27 @@ def calculate_game_over_button_positions():
 
 def turn_off_pressed_buttons_with_color(button_list, pressed_button, color):
     for button in button_list:
-        if type(button) == ChoosePlayerTextButton and color == button.color and not button == pressed_button:
+        if is_button_to_turn_off(button, pressed_button, color):
             button.turn_off_pressed()
+
+def is_button_to_turn_off(button, pressed_button, color):
+    return type(button) == ChoosePlayerTextButton and color == button.color and not button == pressed_button
 
 def check_mouse_press_for_buttons(x, y, button_list):
     for button in button_list:
-        if x > button.center_x + button.width / 2:
-            continue
-        if x < button.center_x - button.width / 2:
-            continue
-        if y > button.center_y + button.height / 2:
-            continue
-        if y < button.center_y - button.height / 2:
-            continue
-        button.on_press()
+        if point_is_in_button(x, y, button):
+            button.on_press()
+
+def point_is_in_button(x, y, button):
+    if x > button.center_x + button.width / 2:
+        return False
+    if x < button.center_x - button.width / 2:
+        return False
+    if y > button.center_y + button.height / 2:
+        return False
+    if y < button.center_y - button.height / 2:
+        return False
+    return True
 
 
 def check_mouse_release_for_buttons(x, y, button_list):
