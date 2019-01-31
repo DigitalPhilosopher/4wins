@@ -3,6 +3,7 @@ import connectfour.Field as fd
 import connectfour.Connect4 as cf
 
 from connectfour.gui.buttons import *
+from connectfour.gui.texts import *
 from connectfour.gui.players import *
 from connectfour.gui.defines import *
 
@@ -16,8 +17,13 @@ class ConnectFour(arcade.Window):
         arcade.set_background_color(arcade.color.BLUE)
 
         self.create_buttons()
+        self.create_texts()
 
         self.current_state = MENU
+    
+    def create_texts(self):
+        self.menu_text_list = create_menu_text_list()
+        self.game_over_text_list = create_game_over_text_list(DRAW_PLAYER_NAME)
     
     def create_buttons(self):
         self.menu_button_list = []
@@ -64,14 +70,17 @@ class ConnectFour(arcade.Window):
 
     
     def lost(self, field, color):
+        if color == fd.Field.RED_PLAYER:
+            color = fd.Field.YELLOW_PLAYER
+        else:
+            color = fd.Field.RED_PLAYER
         self.game_finished(color, field)
-
     
     def won(self, field, color):
         self.game_finished(color, field)
 
     def draw(self, field, color):
-        self.game_finished(color, field)
+        self.game_finished(fd.Field.NO_PLAYER, field)
     
     def game_finished(self, winner, field):
         self.set_mouse_visible(True)
@@ -82,11 +91,11 @@ class ConnectFour(arcade.Window):
 
     def set_winner_text(self, color):
         if color == fd.Field.RED_PLAYER:
-            self.winning_player = RED_PLAYER_NAME
+            self.game_over_text_list = create_game_over_text_list(RED_PLAYER_NAME)
         elif color == fd.Field.YELLOW_PLAYER:
-            self.winning_player = YELLOW_PLAYER_NAME
+            self.game_over_text_list = create_game_over_text_list(YELLOW_PLAYER_NAME)
         else:
-            self.winning_player = DRAW_PLAYER_NAME
+            self.game_over_text_list = create_game_over_text_list(DRAW_PLAYER_NAME)
 
 
     def make_move(self, field, color):
@@ -120,37 +129,18 @@ class ConnectFour(arcade.Window):
 
         for button in self.game_over_button_list:
             button.draw()
-
-        winning_player_text = "WINNER: " + self.winning_player
-        width = 350
-        start_y = SCREEN_HEIGHT / 2 + 75
-        start_x = SCREEN_WIDTH / 2 - width / 2
-        arcade.draw_text(GAME_OVER_TEXT, start_x, start_y, arcade.color.BLACK, 40, width=width, align="center")
-        width = 350
-        start_y = SCREEN_HEIGHT / 2
-        start_x = SCREEN_WIDTH / 2 - width / 2
-        arcade.draw_text(winning_player_text, start_x, start_y, arcade.color.BLACK, 24, width=width, align="center")
+        
+        for text in self.game_over_text_list:
+            text.draw()
     
     def draw_menu(self):
         arcade.start_render()
 
         for button in self.menu_button_list:
             button.draw()
-
-        width = 350
-        start_y = SCREEN_HEIGHT / 2 + 150
-        start_x = SCREEN_WIDTH / 2 - width / 2
-        arcade.draw_text(MENU_TEXT, start_x, start_y, arcade.color.BLACK, 40, width=width, align="center")
-
-        width = 150
-        start_y = SCREEN_HEIGHT / 2 + 75
-        start_x = MARGIN
-        arcade.draw_text("Red player:", start_x, start_y, arcade.color.BLACK, 12, width=width, align="left")
         
-        width = 150
-        start_y = SCREEN_HEIGHT / 2 - 25
-        start_x = MARGIN
-        arcade.draw_text("Yellow player:", start_x, start_y, arcade.color.BLACK, 12, width=width, align="left")
+        for text in self.menu_text_list:
+            text.draw()
     
 
     def draw_playing(self):
