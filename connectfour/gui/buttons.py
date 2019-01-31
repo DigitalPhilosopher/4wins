@@ -169,14 +169,49 @@ def addPlayerButtons(button_list, game, y_button_position, color):
 
 
 def create_game_over_button_list(game):
+    button_list = []
+
+    button_list.append(create_restart_button(game))
+    button_list.append(create_menu_button(game))
+
+    return button_list
+
+def create_restart_button(game):
+    (x_button_position_left, x_button_position_right, y_button_position) = calculate_game_over_button_positions()
+    return RestartTextButton(x_button_position_left, y_button_position, game)
+
+def create_menu_button(game):
+    (x_button_position_left, x_button_position_right, y_button_position) = calculate_game_over_button_positions()
+    return ToMenuTextButton(x_button_position_right, y_button_position, game)
+
+def calculate_game_over_button_positions():
     button_width = 150
     x_button_position_center = SCREEN_WIDTH / 2
     x_button_position_left = x_button_position_center - (button_width / 2 + 10)
     x_button_position_right = x_button_position_center + (button_width / 2 + 10)
     y_button_position = SCREEN_HEIGHT / 2 - 50
 
-    button_list = []
-    button_list.append(RestartTextButton(x_button_position_left, y_button_position, game))
-    button_list.append(ToMenuTextButton(x_button_position_right, y_button_position, game))
+    return (x_button_position_left, x_button_position_right, y_button_position)
 
-    return button_list
+def turn_off_pressed_buttons_with_color(button_list, pressed_button, color):
+    for button in button_list:
+        if type(button) == ChoosePlayerTextButton and color == button.color and not button == pressed_button:
+            button.turn_off_pressed()
+
+def check_mouse_press_for_buttons(x, y, button_list):
+    for button in button_list:
+        if x > button.center_x + button.width / 2:
+            continue
+        if x < button.center_x - button.width / 2:
+            continue
+        if y > button.center_y + button.height / 2:
+            continue
+        if y < button.center_y - button.height / 2:
+            continue
+        button.on_press()
+
+
+def check_mouse_release_for_buttons(x, y, button_list):
+    for button in button_list:
+        if button.pressed:
+            button.on_release()

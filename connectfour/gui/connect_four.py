@@ -212,7 +212,7 @@ class ConnectFour(arcade.Window):
 
     
     def set_player(self, color, player_function, button):
-        self.turn_off_pressed_buttons_with_color(self.menu_button_list, button, color)
+        turn_off_pressed_buttons_with_color(self.menu_button_list, button, color)
         if color == fd.Field.RED_PLAYER:
             self.red_player_function = player_function
             self.red_pressed_button = button
@@ -222,42 +222,19 @@ class ConnectFour(arcade.Window):
 
 
     def on_mouse_press_game_over(self, x, y, button, key_modifiers):
-        self.check_mouse_press_for_buttons(x, y, self.game_over_button_list)
+        check_mouse_press_for_buttons(x, y, self.game_over_button_list)
 
 
     def on_mouse_release_game_over(self, x, y, button, key_modifiers):
-        self.check_mouse_release_for_buttons(x, y, self.game_over_button_list)
+        check_mouse_release_for_buttons(x, y, self.game_over_button_list)
 
 
     def on_mouse_press_menu(self, x, y, button, key_modifiers):
-        self.check_mouse_press_for_buttons(x, y, self.menu_button_list)
+        check_mouse_press_for_buttons(x, y, self.menu_button_list)
 
 
     def on_mouse_release_menu(self, x, y, button, key_modifiers):
-        self.check_mouse_release_for_buttons(x, y, self.menu_button_list)
-    
-    def turn_off_pressed_buttons_with_color(self, button_list, pressed_button, color):
-        for button in button_list:
-            if type(button) == ChoosePlayerTextButton and color == button.color and not button == pressed_button:
-                button.turn_off_pressed()
-    
-    def check_mouse_press_for_buttons(self, x, y, button_list):
-        for button in button_list:
-            if x > button.center_x + button.width / 2:
-                continue
-            if x < button.center_x - button.width / 2:
-                continue
-            if y > button.center_y + button.height / 2:
-                continue
-            if y < button.center_y - button.height / 2:
-                continue
-            button.on_press()
-
-
-    def check_mouse_release_for_buttons(self, x, y, button_list):
-        for button in button_list:
-            if button.pressed:
-                button.on_release()
+        check_mouse_release_for_buttons(x, y, self.menu_button_list)
 
     def on_mouse_release_playing(self, x, y, dx, dy):
         self.move = self.get_pick_from_position()
